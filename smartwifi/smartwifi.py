@@ -37,7 +37,7 @@ def main():
                 difference = int(fastest) - int(current)
 
                 if difference >= STRENGTH_DIFFERENCE_THRESHOLD:
-                    print("switching to {}".format(wifi_list[1]['name']))
+                    print("switching to {}".format(wifi_list[0]['name']))
                     subprocess.run(
                         ["/usr/bin/nmcli",
                          "device",
