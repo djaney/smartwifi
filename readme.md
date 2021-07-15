@@ -1,8 +1,8 @@
 ## Install
 
-    pip3 install git+https://github.com/djaney/smartwifi.git
+    sudo pip3 install git+https://github.com/djaney/smartwifi.git
 
 
 ## Usage
 
-    usage: smartwifi
+    usage: sudo smartwifi
