@@ -30,7 +30,7 @@ def main():
                          "device",
                          "wifi",
                          "connect",
-                         wifi_list[1]['name']])
+                         wifi_list[0]['name']])
         time.sleep(10)
 
 
