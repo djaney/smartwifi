@@ -11,6 +11,6 @@ setup(
     author_email='thedjaney@gmail.com',
     description='Autoswitch wifi depending on strength',
     entry_points={
-        'console_scripts': ['smartwifi=smartwifi:main'],
+        'console_scripts': ['smartwifi=smartwifi.smartwifi:main'],
     },
 )
