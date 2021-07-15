@@ -17,17 +17,20 @@ def main():
         # if current connection is not fastest
         if len(wifi_list) >= 2 and not wifi_list[0]['current']:
             fastest = wifi_list[0]['strength']
-            current = list(filter(lambda i: i['current'], wifi_list))[0]['strength']
-            difference = int(fastest) - int(current)
+            current = list(filter(lambda i: i['current'], wifi_list))
 
-            if difference >= STRENGTH_DIFFERENCE_THRESHOLD:
-                print("switching to {}".format(wifi_list[1]['name']))
-                subprocess.run(
-                    ["/usr/bin/nmcli",
-                     "device",
-                     "wifi",
-                     "connect",
-                     wifi_list[1]['name']])
+            if len(current) > 0:
+                current = current[0]['strength']
+                difference = int(fastest) - int(current)
+
+                if difference >= STRENGTH_DIFFERENCE_THRESHOLD:
+                    print("switching to {}".format(wifi_list[1]['name']))
+                    subprocess.run(
+                        ["/usr/bin/nmcli",
+                         "device",
+                         "wifi",
+                         "connect",
+                         wifi_list[1]['name']])
         time.sleep(10)
 
 
