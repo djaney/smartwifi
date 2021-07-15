@@ -1,5 +1,8 @@
 import subprocess
 import time
+import argparse
+import warnings
+
 """
 Based on https://www.reddit.com/r/linux/comments/bbzm9t/automatically_switch_to_the_strongest_wifi_signal/
 """
@@ -8,11 +11,21 @@ STRENGTH_DIFFERENCE_THRESHOLD = 12
 
 
 def main():
-    print("Welcome to smartwifi. Network will automatically switch of stronger wifi is detected")
+    parser = argparse.ArgumentParser(description='Automatically switch to strongest signal')
+    parser.add_argument('--monitor', '-m', action="store_true", default=False, help='Continuously monitor')
+    parser.add_argument('--print', '-p', action="store_true", default=False, help='Print wifi networks')
+
+    args = parser.parse_args()
     while True:
         wifi_list = scan_known_wifi()
         # sort by strength
-        wifi_list = sorted(wifi_list, key=lambda x: x['strength'], reverse=True)
+        wifi_list = sorted(wifi_list, key=lambda x: x['predicted_speed'], reverse=True)
+
+        if args.print:
+            for w in wifi_list:
+                print("Name={name}, Est. Speed={predicted_speed:0.1f} Net. Speed={network_speed:0.1f} {speed_unit}, "
+                      "Signal Strength={strength}, "
+                      "Connected={current}".format(**w))
 
         # if current connection is not fastest
         if len(wifi_list) >= 2 and not wifi_list[0]['current']:
@@ -31,10 +44,10 @@ def main():
                          "wifi",
                          "connect",
                          wifi_list[0]['name']])
-        time.sleep(10)
-
-
-
+        if args.monitor:
+            time.sleep(10)
+        else:
+            break
 
 
 def scan_known_wifi():
@@ -66,16 +79,25 @@ def scan_known_wifi():
         name, strength, speed, current = i.split(":")
         if name not in known_networks:
             continue
+        strength = float(strength)
+        speed_unit = ''
+        speed_value = 0.0
+        try:
+            speed_value, speed_unit = speed.split(" ")
+            speed_value = float(speed_value)
+            predicted_speed = speed_value * (strength / 100)
+        except Exception as e:
+            predicted_speed = strength
+            warnings.warn("unable to parse speed with value {}".format(speed))
         networks.append({
             "name": name,
             "strength": strength,
-            "speed": speed,
+            "network_speed": speed_value,
+            "predicted_speed": predicted_speed,
+            "speed_unit": speed_unit,
             "current": current == "*",
         })
     return networks
-
-
-
 
 
 if __name__ == "__main__":
