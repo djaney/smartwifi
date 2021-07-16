@@ -17,15 +17,6 @@ def main():
 
     args = parser.parse_args()
 
-    # check if root
-    is_root_info = subprocess.run(
-        ["/usr/bin/sudo"],
-        stdout=subprocess.PIPE,
-        universal_newlines=True)
-
-    if is_root_info.stdout.lower() != "root":
-        raise ValueError("must be root. use sudo")
-
     while True:
         wifi_list = scan_known_wifi()
         # sort by strength
