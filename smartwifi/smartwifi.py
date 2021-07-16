@@ -39,7 +39,8 @@ def main():
                 if difference >= STRENGTH_DIFFERENCE_THRESHOLD:
                     print("switching to {}".format(wifi_list[0]['name']))
                     subprocess.run(
-                        ["/usr/bin/nmcli",
+                        ["sudo",
+                         "/usr/bin/nmcli",
                          "device",
                          "wifi",
                          "connect",
