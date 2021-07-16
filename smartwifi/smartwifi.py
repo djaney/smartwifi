@@ -16,6 +16,16 @@ def main():
     parser.add_argument('--print', '-p', action="store_true", default=False, help='Print wifi networks')
 
     args = parser.parse_args()
+
+    # check if root
+    is_root_info = subprocess.run(
+        ["/usr/bin/sudo"],
+        stdout=subprocess.PIPE,
+        universal_newlines=True)
+
+    if is_root_info.stdout.lower() != "root":
+        raise ValueError("must be root. use sudo")
+
     while True:
         wifi_list = scan_known_wifi()
         # sort by strength
@@ -39,8 +49,7 @@ def main():
                 if difference >= STRENGTH_DIFFERENCE_THRESHOLD:
                     print("switching to {}".format(wifi_list[0]['name']))
                     subprocess.run(
-                        ["sudo",
-                         "/usr/bin/nmcli",
+                        ["/usr/bin/nmcli",
                          "device",
                          "wifi",
                          "connect",
